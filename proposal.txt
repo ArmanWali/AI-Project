@@ -1,0 +1,1025 @@
+# 📄 **AI SEMESTER PROJECT PROPOSAL**
+
+## **AI-Powered Resume Screening & Fair Hiring Intelligence System**
+
+---
+
+### **Project Team**
+- **Team Members:** [Your Names]
+- **Course:** Artificial Intelligence
+- **Semester:** Fall 2025
+- **Submission Date:** November 14, 2025
+- **Project Category:** C. Intelligent Agent Simulations & D. Predictive Analytics
+
+---
+
+## **1. EXECUTIVE SUMMARY**
+
+This project proposes an **AI-Powered Resume Screening and Fair Hiring Intelligence System** that automates candidate evaluation while eliminating unconscious bias. The system integrates multiple AI paradigms including intelligent agents, search algorithms, constraint satisfaction, supervised/unsupervised learning, and reinforcement learning to create a comprehensive hiring solution.
+
+**Key Innovation:** Unlike traditional keyword-matching systems, our solution uses semantic understanding (BERT), adaptive learning (Q-Learning), and explainable AI (SHAP/LIME) to make transparent, fair, and data-driven hiring decisions.
+
+**Real-World Impact:** 
+- Reduces hiring time by 70% (from weeks to hours)
+- Eliminates unconscious bias affecting 79% of hiring decisions
+- Provides legally-compliant explanations for all decisions
+- Learns from hiring outcomes to continuously improve
+
+---
+
+## **2. PROBLEM STATEMENT**
+
+### **2.1 Current Challenges in Recruitment**
+
+**Industry Pain Points:**
+1. **Volume Overload:** HR departments receive 250+ applications per job posting
+2. **Human Bias:** 79% of recruiters admit unconscious bias influences decisions
+3. **Time Inefficiency:** Average time-to-hire is 42 days, costing companies $4,000+ per position
+4. **Skill Mismatch:** 50% of new hires leave within 18 months due to poor fit
+5. **Lack of Transparency:** Candidates rarely receive meaningful feedback
+
+**Technical Challenges:**
+- Resumes vary in format (PDF, DOCX, plain text)
+- Skill descriptions use different terminology (e.g., "ML" vs "Machine Learning")
+- Context matters: "5 years Python" in gaming ≠ "5 years Python" in finance
+- No standardized evaluation metrics across companies
+
+### **2.2 Proposed Solution**
+
+An **intelligent multi-agent system** that:
+- **Searches** optimal candidates using A* algorithm through candidate database
+- **Optimizes** interview scheduling using Constraint Satisfaction Problems
+- **Predicts** job success using supervised ML (Random Forest, BERT)
+- **Adapts** hiring strategy using Reinforcement Learning
+- **Explains** every decision using SHAP/LIME for transparency
+
+---
+
+## **3. OBJECTIVES & LEARNING OUTCOMES ALIGNMENT**
+
+### **3.1 Primary Objectives**
+
+| Objective | Measurable Goal | Success Metric |
+|-----------|----------------|----------------|
+| **Search Efficiency** | Find top 10 candidates from 1000+ resumes in <5 seconds | Time complexity O(n log n) |
+| **Prediction Accuracy** | Classify candidate suitability with 85%+ accuracy | F1-score ≥ 0.85 |
+| **Semantic Matching** | Match job-resume semantically beyond keywords | Cosine similarity ≥ 0.75 |
+| **Fair Decisions** | Eliminate demographic bias | Statistical parity ≥ 0.9 |
+| **Explainability** | Provide human-readable explanation for every decision | 100% coverage |
+| **Adaptive Learning** | Improve ranking over time from hiring outcomes | 10% accuracy gain after 100 hires |
+
+### **3.2 Learning Outcomes Mapping**
+
+| Course Learning Outcome | Project Implementation |
+|------------------------|------------------------|
+| **Formulate AI problems with measurable goals** | Define hiring as multi-objective optimization with quantified metrics |
+| **Implement search algorithms efficiently** | A* search through candidate space with skill-overlap heuristic |
+| **Handle real-world datasets** | Process 2,400+ diverse resumes from Kaggle (PDF, DOCX, TXT) |
+| **Develop ML/RL models** | Train Random Forest, BERT, Q-Learning agent |
+| **Apply explainable AI** | SHAP for feature importance, LIME for instance-level explanations |
+| **Professional documentation** | Industry-standard report with architecture diagrams, API docs |
+
+---
+
+## **4. SYSTEM ARCHITECTURE**
+
+### **4.1 Agent-Based Architecture**
+
+Our system follows a **multi-agent architecture** with specialized agents:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    HIRING INTELLIGENCE SYSTEM                │
+└─────────────────────────────────────────────────────────────┘
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        │                     │                     │
+   ┌────▼────┐          ┌─────▼─────┐        ┌─────▼─────┐
+   │ Search  │          │ Evaluation│        │ Scheduling│
+   │ Agent   │          │  Agent    │        │  Agent    │
+   │ (A*)    │          │ (ML+BERT) │        │   (CSP)   │
+   └────┬────┘          └─────┬─────┘        └─────┬─────┘
+        │                     │                     │
+        └─────────────────────┼─────────────────────┘
+                              │
+                      ┌───────▼────────┐
+                      │  Learning Agent│
+                      │  (Q-Learning)  │
+                      └───────┬────────┘
+                              │
+                      ┌───────▼────────┐
+                      │  Explainability│
+                      │  Module (SHAP) │
+                      └────────────────┘
+```
+
+**Agent Types (Week 7 Requirement):**
+
+1. **Search Agent** (Goal-Based Agent)
+   - **Goal:** Find N most suitable candidates
+   - **Percepts:** Job requirements, candidate database
+   - **Actions:** Rank, filter, retrieve candidates
+   - **Performance Measure:** Precision@10, search time
+
+2. **Evaluation Agent** (Model-Based Agent)
+   - **Internal Model:** ML classifier + BERT embeddings
+   - **State:** Candidate features, job requirements
+   - **Actions:** Score candidates (0-1 probability)
+
+3. **Scheduling Agent** (Goal-Based Agent)
+   - **Goal:** Optimal interview schedule
+   - **Constraints:** Time, interviewer availability, candidate preferences
+   - **Actions:** Assign time slots
+
+4. **Learning Agent** (Learning Agent)
+   - **Learning Element:** Q-Learning algorithm
+   - **Performance Element:** Hiring decision policy
+   - **Feedback:** Hire success/failure outcomes
+
+---
+
+## **5. TECHNICAL APPROACH**
+
+### **5.1 Week 7-8: Search Algorithms & Agent Design**
+
+#### **5.1.1 A* Search Implementation**
+
+**Problem Formulation:**
+- **State Space:** All possible candidate subsets
+- **Initial State:** Full candidate database (N candidates)
+- **Goal State:** Top-K candidates matching job requirements
+- **Actions:** Include/exclude candidate from result set
+- **Path Cost:** Inverse of match quality
+
+**Heuristic Function:**
+```
+h(candidate, job) = w₁·skill_overlap + w₂·experience_match + w₃·education_fit
+where:
+  skill_overlap = |candidate_skills ∩ required_skills| / |required_skills|
+  experience_match = min(1, candidate_years / required_years)
+  education_fit = education_level_match (0 or 1)
+  w₁=0.5, w₂=0.3, w₃=0.2 (tunable weights)
+```
+
+**Admissibility:** h(n) never overestimates true match quality since it uses maximum possible overlap.
+
+**Expected Performance:**
+- Time Complexity: O(N log N) with priority queue
+- Space Complexity: O(N)
+- Benchmark: 10,000 candidates in <2 seconds
+
+#### **5.1.2 Agent Design**
+
+**Goal-Based Agent Formulation:**
+```python
+Agent = (Percepts, Actions, Goal, Utility)
+
+Percepts = {
+  job_description: Text,
+  required_skills: Set[String],
+  min_experience: Integer,
+  candidate_database: List[Resume]
+}
+
+Actions = {
+  search(job) → List[Candidate],
+  rank(candidates) → Sorted[Candidate],
+  filter(candidates, threshold) → List[Candidate]
+}
+
+Goal = "Maximize hiring success rate while minimizing time-to-hire"
+
+Utility = α·(hiring_success) - β·(time_cost) - γ·(interview_cost)
+```
+
+---
+
+### **5.2 Week 9: Constraint Satisfaction Problem**
+
+#### **5.2.1 Interview Scheduling as CSP**
+
+**Variables:**
+```
+X = {interview₁, interview₂, ..., interviewₙ}
+where each interview_i needs assignment
+```
+
+**Domains:**
+```
+D(interview_i) = {
+  time_slot: [9AM, 11AM, 2PM, 4PM],
+  interviewer: [HR_Manager, Tech_Lead, Senior_Dev],
+  location: [Room_A, Room_B, Zoom_Link_1, Zoom_Link_2]
+}
+```
+
+**Constraints:**
+```
+C = {
+  C₁: No interviewer double-booking
+  C₂: No room double-booking
+  C₃: Candidate available at assigned time
+  C₄: Interviewer has required technical expertise
+  C₅: Max 3 interviews per interviewer per day
+  C₆: Technical interviews after HR screening
+  C₇: Lunch break 12-1 PM (no interviews)
+}
+```
+
+**Solving Algorithm:**
+- **Backtracking with Forward Checking**
+- **Variable Ordering:** Most-constrained-variable (MRV) heuristic
+- **Value Ordering:** Least-constraining-value (LCV) heuristic
+- **Arc Consistency:** AC-3 algorithm for constraint propagation
+
+**Expected Output:** Optimal schedule for 50 candidates in <1 minute
+
+#### **5.2.2 Alternative CSP: Team Formation**
+
+**Variables:** {developer, designer, manager, tester}  
+**Domains:** Qualified candidates for each role  
+**Constraints:** Budget, skill complementarity, diversity targets
+
+---
+
+### **5.3 Week 10: Supervised Learning Pipeline**
+
+#### **5.3.1 Dataset Acquisition**
+
+**Primary Dataset:** Kaggle Resume Dataset
+- **Source:** https://www.kaggle.com/datasets/snehaanbhawal/resume-dataset
+- **Size:** 2,484 labeled resumes
+- **Classes:** 25 job categories
+- **Format:** PDF, DOCX, TXT
+
+**Data Split:**
+- Training: 70% (1,739 resumes)
+- Validation: 15% (372 resumes)
+- Test: 15% (373 resumes)
+
+#### **5.3.2 Feature Engineering**
+
+**Text Features (TF-IDF):**
+```python
+text_features = TfidfVectorizer(
+    max_features=500,
+    ngram_range=(1, 2),
+    stop_words='english'
+).fit_transform(resume_texts)
+```
+
+**Structured Features:**
+| Feature | Type | Extraction Method |
+|---------|------|-------------------|
+| `years_experience` | Integer | Regex pattern matching dates |
+| `education_level` | Categorical | Rule-based (BS=1, MS=2, PhD=3) |
+| `num_skills` | Integer | Count from skill dictionary |
+| `num_certifications` | Integer | Pattern matching "Certified", "Certificate" |
+| `job_switches` | Integer | Count of company changes |
+| `domain_experience` | Binary | Match with job domain |
+| `leadership_keywords` | Integer | Count: "led", "managed", "directed" |
+| `technical_depth` | Float | Skill rarity score |
+
+**Final Feature Vector:** 508 dimensions (500 TF-IDF + 8 structured)
+
+#### **5.3.3 Baseline Models**
+
+**Model 1: Random Forest Classifier**
+```python
+RandomForestClassifier(
+    n_estimators=200,
+    max_depth=20,
+    min_samples_split=5,
+    class_weight='balanced',
+    random_state=42
+)
+```
+
+**Model 2: Logistic Regression**
+```python
+LogisticRegression(
+    penalty='l2',
+    C=1.0,
+    solver='lbfgs',
+    max_iter=1000,
+    multi_class='multinomial'
+)
+```
+
+**Evaluation Metrics:**
+- **Accuracy:** Overall correctness
+- **Precision:** Of recommended candidates, how many are truly suitable
+- **Recall:** Of suitable candidates, how many did we find
+- **F1-Score:** Harmonic mean (critical for imbalanced classes)
+- **ROC-AUC:** Area under receiver operating curve
+
+**Target Performance:** F1-score ≥ 0.80 on test set
+
+---
+
+### **5.4 Week 11: Advanced ML - BERT Integration**
+
+#### **5.4.1 Semantic Job-Resume Matching**
+
+**Model:** BERT (Bidirectional Encoder Representations from Transformers)
+- **Pretrained Model:** `bert-base-uncased` (110M parameters)
+- **Fine-tuning:** Optional on job-resume pairs
+
+**Approach:**
+```python
+# Generate embeddings
+job_embedding = BERT([CLS] + job_description + [SEP])  # 768-dim vector
+resume_embedding = BERT([CLS] + resume_text + [SEP])   # 768-dim vector
+
+# Compute semantic similarity
+similarity = cosine_similarity(job_embedding, resume_embedding)
+
+# Classification
+if similarity > 0.75:
+    decision = "Strong Match"
+elif similarity > 0.60:
+    decision = "Moderate Match"
+else:
+    decision = "Weak Match"
+```
+
+**Advantages Over TF-IDF:**
+- Understands context: "Python developer" ≠ "Python snake"
+- Handles synonyms: "ML engineer" ≈ "Machine Learning specialist"
+- Captures semantic relationships: "5 years React" relates to "frontend development"
+
+**Expected Improvement:** +10-15% accuracy over baseline TF-IDF
+
+#### **5.4.2 Hyperparameter Tuning**
+
+**Grid Search:**
+```python
+param_grid = {
+    'n_estimators': [100, 200, 300],
+    'max_depth': [10, 20, 30, None],
+    'min_samples_split': [2, 5, 10]
+}
+GridSearchCV(RandomForest(), param_grid, cv=5, scoring='f1_weighted')
+```
+
+**Visualization:**
+- Learning curves (training vs validation loss)
+- Feature importance plots
+- Confusion matrices
+- ROC curves for each class
+
+---
+
+### **5.5 Week 12: Reinforcement Learning**
+
+#### **5.5.1 Problem Formulation**
+
+**MDP (Markov Decision Process) Definition:**
+
+**State Space (S):**
+```
+s = (candidate_features, job_requirements, market_conditions, urgency)
+  where:
+    candidate_features ∈ ℝ⁵⁰⁸
+    job_requirements ∈ ℝ¹⁰
+    market_conditions = {tight, normal, loose}
+    urgency = {low, medium, high}
+```
+
+**Action Space (A):**
+```
+A = {reject, schedule_phone_screen, schedule_technical, direct_hire}
+```
+
+**Reward Function (R):**
+```
+R(s, a, s') = {
+  +100  if hired candidate succeeds (stays >1 year, good performance)
+  +50   if hired candidate is adequate
+  -50   if hired candidate fails/quits early
+  -10   for each interview round (cost)
+  -5    for each day position unfilled
+}
+```
+
+**Transition Probability:** Learned from historical data
+
+**Discount Factor:** γ = 0.95 (value future rewards)
+
+#### **5.5.2 Q-Learning Algorithm**
+
+**Update Rule:**
+```
+Q(s, a) ← Q(s, a) + α[r + γ·max_a' Q(s', a') - Q(s, a)]
+
+where:
+  α = 0.1 (learning rate)
+  γ = 0.95 (discount factor)
+  ε = 0.1 (exploration rate)
+```
+
+**Policy:**
+```
+π(s) = {
+  random action           with probability ε (explore)
+  argmax_a Q(s, a)        with probability 1-ε (exploit)
+}
+```
+
+**Training:**
+- **Episodes:** 1,000 hiring scenarios
+- **Data:** Historical hiring records (real or simulated)
+- **Convergence Criterion:** Q-values change <0.01 for 100 consecutive episodes
+
+**Expected Outcome:** Agent learns to:
+- Fast-track exceptional candidates (direct hire)
+- Invest interview time in borderline cases
+- Reject clearly unsuitable candidates early
+- Adapt hiring bar based on urgency
+
+---
+
+### **5.6 Week 12-13: Explainability**
+
+#### **5.6.1 SHAP (SHapley Additive exPlanations)**
+
+**Purpose:** Explain feature contribution to predictions
+
+**Method:**
+```python
+import shap
+
+# Train model
+model = RandomForestClassifier().fit(X_train, y_train)
+
+# Compute SHAP values
+explainer = shap.TreeExplainer(model)
+shap_values = explainer.shap_values(X_test)
+
+# Visualize
+shap.summary_plot(shap_values, X_test, feature_names=feature_names)
+shap.force_plot(explainer.expected_value[1], shap_values[1][i], X_test[i])
+```
+
+**Output:** For each candidate, show which features pushed decision toward accept/reject
+
+**Example Explanation:**
+```
+Candidate: John Doe
+Prediction: ACCEPT (Score: 0.87)
+
+Top Positive Factors:
+  +0.32  Years of Experience (8 years > 5 required)
+  +0.21  Relevant Skills (Python, TensorFlow, AWS)
+  +0.14  Education (MS in Computer Science)
+
+Top Negative Factors:
+  -0.08  Job Switches (5 companies in 8 years)
+  -0.04  Domain Mismatch (Gaming → Finance)
+```
+
+#### **5.6.2 LIME (Local Interpretable Model-agnostic Explanations)**
+
+**Purpose:** Explain individual predictions for any model
+
+**Method:**
+```python
+from lime.lime_tabular import LimeTabularExplainer
+
+explainer = LimeTabularExplainer(
+    X_train, 
+    feature_names=feature_names,
+    class_names=['Reject', 'Accept']
+)
+
+explanation = explainer.explain_instance(
+    X_test[i], 
+    model.predict_proba,
+    num_features=10
+)
+```
+
+**Use Case:** Generate candidate-specific feedback reports
+
+---
+
+## **6. DATASETS & DATA PIPELINE**
+
+### **6.1 Primary Dataset**
+
+| Attribute | Details |
+|-----------|---------|
+| **Name** | Resume Dataset for NLP (Kaggle) |
+| **URL** | https://www.kaggle.com/datasets/snehaanbhawal/resume-dataset |
+| **Size** | 2,484 resumes |
+| **Categories** | 25 job types (Software Engineer, Data Scientist, HR, etc.) |
+| **Format** | CSV with text content |
+| **License** | CC0: Public Domain |
+
+### **6.2 Supplementary Datasets**
+
+1. **Job Descriptions:** Scrape from LinkedIn/Indeed (100 per category)
+2. **Skill Taxonomy:** GitHub Skills (5,000+ skills)
+3. **Historical Hiring Outcomes:** Synthetic data generator for RL training
+
+### **6.3 Preprocessing Pipeline**
+
+```python
+# Pipeline stages
+def preprocess_resume(resume_text):
+    # 1. Text Cleaning
+    text = remove_special_chars(resume_text)
+    text = lowercase(text)
+    
+    # 2. Information Extraction
+    name = extract_name(text)
+    email = extract_email(text)
+    phone = extract_phone(text)
+    education = extract_education(text)
+    experience = extract_experience_years(text)
+    skills = extract_skills(text, skill_dictionary)
+    
+    # 3. Feature Engineering
+    features = {
+        'text_features': tfidf_vectorizer.transform([text]),
+        'structured_features': [
+            experience, len(skills), education_score, ...
+        ]
+    }
+    
+    # 4. Normalization
+    features_scaled = scaler.transform(features)
+    
+    return features_scaled
+```
+
+### **6.4 Data Quality Assurance**
+
+- **Missing Values:** Impute with median (numerical) or mode (categorical)
+- **Duplicates:** Remove exact duplicates, flag near-duplicates
+- **Outliers:** Cap experience at 40 years, flag suspicious patterns
+- **Class Imbalance:** Use SMOTE (Synthetic Minority Oversampling) if needed
+
+---
+
+## **7. EVALUATION METRICS**
+
+### **7.1 Search Algorithm Metrics**
+
+| Metric | Definition | Target |
+|--------|------------|--------|
+| **Precision@K** | Relevant candidates in top K / K | ≥ 0.80 |
+| **Recall@K** | Relevant candidates found / Total relevant | ≥ 0.70 |
+| **Search Time** | Time to retrieve top 10 from 10K candidates | < 2 seconds |
+| **Space Complexity** | Memory used during search | O(N) |
+
+### **7.2 ML Classification Metrics**
+
+| Metric | Formula | Target |
+|--------|---------|--------|
+| **Accuracy** | (TP+TN)/(TP+TN+FP+FN) | ≥ 0.85 |
+| **Precision** | TP/(TP+FP) | ≥ 0.80 |
+| **Recall** | TP/(TP+FN) | ≥ 0.80 |
+| **F1-Score** | 2·(Precision·Recall)/(Precision+Recall) | ≥ 0.80 |
+| **ROC-AUC** | Area under ROC curve | ≥ 0.90 |
+
+**Confusion Matrix:** Per-class breakdown for all 25 job categories
+
+### **7.3 Fairness Metrics**
+
+| Metric | Definition | Target |
+|--------|------------|--------|
+| **Statistical Parity** | P(accept\|group_A) / P(accept\|group_B) | 0.8 - 1.2 |
+| **Equal Opportunity** | TPR for different demographic groups | Δ < 0.1 |
+| **Disparate Impact** | (Minority acceptance rate) / (Majority rate) | > 0.8 |
+
+### **7.4 RL Performance Metrics**
+
+| Metric | Definition | Target |
+|--------|------------|--------|
+| **Cumulative Reward** | Total reward over 1000 episodes | Increasing trend |
+| **Policy Convergence** | Episodes until Q-values stabilize | < 500 |
+| **Success Rate** | % of hired candidates who succeed | > baseline +10% |
+
+---
+
+## **8. IMPLEMENTATION PLAN**
+
+### **8.1 Technology Stack**
+
+| Component | Technology | Justification |
+|-----------|-----------|---------------|
+| **Language** | Python 3.10+ | Industry standard, rich ML ecosystem |
+| **ML Framework** | scikit-learn 1.3 | Robust baseline models, easy to use |
+| **Deep Learning** | PyTorch 2.0 / Transformers | BERT implementation, flexibility |
+| **RL Library** | Custom Q-Learning | Educational value, full control |
+| **Explainability** | SHAP 0.42, LIME 0.2 | State-of-the-art interpretability |
+| **CSP Solver** | python-constraint 1.4 | Declarative constraint definition |
+| **Web Framework** | Flask 2.3 | Lightweight, easy deployment |
+| **Database** | SQLite / PostgreSQL | Candidate storage, query efficiency |
+| **Visualization** | Matplotlib, Seaborn, Plotly | Professional charts and plots |
+| **Version Control** | Git + GitHub | Code management, collaboration |
+
+### **8.2 Development Environment**
+
+```bash
+# Environment setup
+conda create -n ai_hiring python=3.10
+conda activate ai_hiring
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Download NLP models
+python -m spacy download en_core_web_sm
+```
+
+### **8.3 Project Structure**
+
+```
+ai-hiring-system/
+├── data/
+│   ├── raw/                 # Original resume dataset
+│   ├── processed/           # Cleaned, featurized data
+│   └── models/              # Saved trained models
+├── src/
+│   ├── agents/
+│   │   ├── search_agent.py  # A* search implementation
+│   │   ├── eval_agent.py    # ML evaluation agent
+│   │   └── schedule_agent.py # CSP scheduler
+│   ├── preprocessing/
+│   │   ├── parser.py        # Resume parsing
+│   │   └── features.py      # Feature engineering
+│   ├── models/
+│   │   ├── baseline.py      # Random Forest, Logistic Regression
+│   │   ├── bert_model.py    # BERT semantic matching
+│   │   └── rl_agent.py      # Q-Learning agent
+│   ├── explainability/
+│   │   ├── shap_explain.py
+│   │   └── lime_explain.py
+│   └── utils/
+│       ├── metrics.py       # Evaluation functions
+│       └── visualize.py     # Plotting utilities
+├── notebooks/
+│   ├── 01_data_exploration.ipynb
+│   ├── 02_baseline_models.ipynb
+│   ├── 03_bert_integration.ipynb
+│   └── 04_rl_training.ipynb
+├── app/
+│   ├── app.py               # Flask web application
+│   ├── templates/           # HTML templates
+│   └── static/              # CSS, JS, images
+├── tests/
+│   ├── test_agents.py
+│   ├── test_models.py
+│   └── test_pipeline.py
+├── docs/
+│   ├── proposal.md          # This document
+│   ├── architecture.md
+│   └── api_documentation.md
+├── requirements.txt
+├── README.md
+└── .gitignore
+```
+
+---
+
+## **9. TIMELINE & MILESTONES**
+
+### **9.1 Detailed Schedule**
+
+| Week | Dates | Tasks | Deliverables |
+|------|-------|-------|--------------|
+| **7** | Nov 5-11 | • Define problem & objectives<br>• Design agent architecture<br>• Download datasets<br>• Set up development environment | **Proposal Report** (this document) |
+| **8** | Nov 12-18 | • Implement A* search algorithm<br>• Build resume parser<br>• Test search with 1000+ resumes | **Deliverable 2:** Agent Design Report + Working A* Demo |
+| **9** | Nov 19-25 | • Implement CSP scheduler<br>• Define constraints<br>• Test with sample interview data | CSP implementation documented |
+| **10** | Nov 26-Dec 2 | • Data preprocessing pipeline<br>• Feature engineering<br>• Train Random Forest<br>• Train Logistic Regression<br>• Evaluate baseline models | **Deliverable 3:** Data Pipeline + Baseline ML Report |
+| **11** | Dec 3-9 | • Integrate BERT model<br>• Fine-tune hyperparameters<br>• Compare BERT vs TF-IDF<br>• Visualize results | Advanced ML integration complete |
+| **12** | Dec 10-16 | • Implement Q-Learning agent<br>• Train on historical data<br>• Add SHAP explanations<br>• Add LIME explanations<br>• Test explainability | **Deliverable 4:** Advanced ML/RL + Explainability Report |
+| **13** | Dec 17-23 | • Integrate all components<br>• Build Flask web interface<br>• Create presentation<br>• Write final report<br>• Record demo video | **Final Deliverable:** Complete System + Report + Presentation |
+
+### **9.2 Risk Management**
+
+| Risk | Probability | Impact | Mitigation |
+|------|------------|--------|------------|
+| Dataset quality issues | Medium | High | Use multiple datasets, extensive preprocessing |
+| BERT integration complexity | High | Medium | Use pretrained models, fallback to TF-IDF |
+| RL training time | Medium | Medium | Use simplified state space, parallel training |
+| Scope creep | High | High | Strict prioritization, MVP first approach |
+| Team member unavailability | Low | High | Clear task division, documentation |
+
+---
+
+## **10. EXPECTED OUTCOMES**
+
+### **10.1 Technical Deliverables**
+
+1. **Working AI System:**
+   - Web interface for resume upload and analysis
+   - REST API for programmatic access
+   - Real-time candidate ranking and explanation
+
+2. **Trained Models:**
+   - Random Forest classifier (saved as .pkl)
+   - Logistic Regression model
+   - Fine-tuned BERT model
+   - Q-Learning policy (Q-table)
+
+3. **Documentation:**
+   - 15-20 page final report (IEEE format)
+   - API documentation
+   - User manual
+   - Code documentation (docstrings)
+
+4. **Presentation:**
+   - 12-15 minute presentation
+   - Live demo
+   - Q&A preparation
+
+5. **GitHub Repository:**
+   - Clean, documented code
+   - README with setup instructions
+   - requirements.txt
+   - Sample data and outputs
+
+### **10.2 Learning Outcomes**
+
+By completing this project, we will demonstrate mastery of:
+
+✅ **Search Algorithms:** A* implementation with custom heuristics  
+✅ **Constraint Satisfaction:** CSP modeling and solving  
+✅ **Supervised Learning:** Multi-class classification, feature engineering  
+✅ **Deep Learning:** BERT fine-tuning, transfer learning  
+✅ **Reinforcement Learning:** Q-Learning, reward shaping  
+✅ **Explainable AI:** SHAP, LIME for model interpretability  
+✅ **Software Engineering:** Modular design, testing, documentation  
+✅ **Ethics:** Bias detection, fairness metrics, transparency  
+
+### **10.3 Performance Targets**
+
+| Component | Metric | Target | Stretch Goal |
+|-----------|--------|--------|--------------|
+| **Search** | Precision@10 | 0.80 | 0.90 |
+| **Baseline ML** | F1-Score | 0.80 | 0.85 |
+| **BERT** | Accuracy | 0.85 | 0.90 |
+| **RL** | Success Rate Improvement | +10% | +20% |
+| **Explainability** | Coverage | 100% | N/A |
+| **Fairness** | Statistical Parity | 0.85-1.15 | 0.90-1.10 |
+
+---
+
+## **11. ETHICAL CONSIDERATIONS**
+
+### **11.1 Bias Mitigation**
+
+**Problem:** AI systems can perpetuate historical biases (gender, race, age)
+
+**Our Approach:**
+1. **Bias Auditing:** Test model performance across demographic groups
+2. **Fairness Constraints:** Enforce statistical parity in CSP
+3. **Blind Features:** Remove name, gender indicators, photos
+4. **Diverse Training Data:** Ensure balanced representation
+5. **Regular Monitoring:** Track fairness metrics in production
+
+### **11.2 Transparency & Explainability**
+
+**Why It Matters:**
+- Legal requirement (GDPR, EEOC guidelines)
+- Candidate right to explanation
+- HR accountability
+
+**Implementation:**
+- SHAP/LIME explanations for every decision
+- Audit trail of all recommendations
+- Human-in-the-loop for final decisions
+- Appeal mechanism for rejected candidates
+
+### **11.3 Data Privacy**
+
+**Compliance:**
+- No personally identifiable information (PII) stored unnecessarily
+- Encryption at rest and in transit
+- Access control and audit logs
+- Data retention policy (delete after 90 days)
+- Compliance with GDPR, CCPA
+
+### **11.4 Human-AI Collaboration**
+
+**Philosophy:** AI augments, not replaces, human judgment
+
+**Implementation:**
+- AI provides ranked recommendations with explanations
+- HR makes final hiring decisions
+- Edge cases escalated to humans
+- Continuous feedback loop for model improvement
+
+---
+
+## **12. INNOVATION & NOVELTY**
+
+### **12.1 Technical Innovations**
+
+1. **Hybrid Matching:** Combine keyword search (A*) + semantic understanding (BERT)
+2. **Adaptive Learning:** RL agent learns company-specific hiring patterns
+3. **Multi-Objective Optimization:** Balance accuracy, speed, fairness, cost
+4. **Explainability-First Design:** Built-in transparency from day one
+
+### **12.2 Real-World Impact**
+
+- **Scalability:** Handle 10,000+ applications per job
+- **Speed:** Reduce screening time from days to minutes
+- **Fairness:** Measurably reduce bias
+- **Cost Savings:** $4,000 saved per hire (faster time-to-hire)
+- **Candidate Experience:** Instant, actionable feedback
+
+### **12.3 Beyond Academic Exercise**
+
+This system can be deployed in:
+- **Startups:** Affordable AI recruiting for small teams
+- **Enterprises:** Scale HR operations
+- **Job Boards:** Value-added service for users
+- **Consulting Firms:** Talent matching for projects
+
+---
+
+## **13. REFERENCES**
+
+### **13.1 Academic Papers**
+
+1. Russell, S., & Norvig, P. (2020). *Artificial Intelligence: A Modern Approach* (4th ed.). Pearson.
+2. Devlin, J., et al. (2019). "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding." *NAACL*.
+3. Lundberg, S. M., & Lee, S. I. (2017). "A Unified Approach to Interpreting Model Predictions." *NeurIPS*.
+4. Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* (2nd ed.). MIT Press.
+
+### **13.2 Datasets**
+
+1. Kaggle Resume Dataset: https://www.kaggle.com/datasets/snehaanbhawal/resume-dataset
+2. LinkedIn Job Postings: https://www.linkedin.com/jobs/
+3. GitHub Skills Taxonomy: https://github.com/topics
+
+### **13.3 Libraries & Tools**
+
+1. scikit-learn: https://scikit-learn.org/
+2. Hugging Face Transformers: https://huggingface.co/transformers/
+3. SHAP: https://github.com/slundberg/shap
+4. python-constraint: https://github.com/python-constraint/python-constraint
+
+---
+
+## **14. TEAM ROLES & RESPONSIBILITIES**
+
+| Team Member | Primary Role | Responsibilities |
+|-------------|--------------|------------------|
+| **[Member 1]** | **Search & Agents** | A* implementation, agent architecture, CSP solver |
+| **[Member 2]** | **ML & Deep Learning** | Data preprocessing, baseline models, BERT integration |
+| **[Member 3]** | **RL & Explainability** | Q-Learning agent, SHAP/LIME, fairness metrics |
+
+**Shared Responsibilities:**
+- Weekly progress meetings
+- Code reviews
+- Documentation
+- Report writing
+- Presentation preparation
+
+---
+
+## **15. CONCLUSION**
+
+This project proposes a comprehensive **AI-Powered Resume Screening and Fair Hiring System** that integrates all core AI concepts from the course:
+
+✅ **Intelligent Agents** (goal-based, learning)  
+✅ **Search Algorithms** (A*)  
+✅ **Constraint Satisfaction** (interview scheduling)  
+✅ **Supervised Learning** (Random Forest, Logistic Regression)  
+✅ **Deep Learning** (BERT)  
+✅ **Reinforcement Learning** (Q-Learning)  
+✅ **Explainable AI** (SHAP, LIME)  
+
+**Why This Project Excels:**
+
+1. **Real-World Relevance:** Addresses $4B hiring industry pain point
+2. **Technical Depth:** Integrates 6+ AI paradigms seamlessly
+3. **Ethical Focus:** Built-in fairness and transparency
+4. **Measurable Impact:** Clear metrics for success
+5. **Scalability:** Production-ready architecture
+6. **Learning Value:** Hands-on experience with modern AI stack
+
+We are excited to build this system and demonstrate the power of AI to solve complex real-world problems while maintaining ethical standards.
+
+---
+
+## **16. APPENDICES**
+
+### **Appendix A: Sample Resume Parsing**
+
+```python
+Input Resume:
+"""
+John Doe
+john.doe@email.com | (555) 123-4567
+
+EDUCATION
+Master of Science in Computer Science
+Stanford University, 2018-2020
+
+EXPERIENCE
+Senior Software Engineer, Google (2020-Present)
+- Led team of 5 engineers building ML infrastructure
+- Deployed models serving 1M+ requests/day
+- Technologies: Python, TensorFlow, Kubernetes
+
+SKILLS
+Python, Java, TensorFlow, PyTorch, AWS, Docker
+"""
+
+Extracted Features:
+{
+  'name': 'John Doe',
+  'email': 'john.doe@email.com',
+  'years_experience': 3,
+  'education_level': 2,  # MS
+  'num_skills': 6,
+  'leadership': True,
+  'skills': ['Python', 'Java', 'TensorFlow', 'PyTorch', 'AWS', 'Docker'],
+  'companies': ['Google'],
+  'job_titles': ['Senior Software Engineer']
+}
+```
+
+### **Appendix B: Sample Explanation Output**
+
+```
+╔══════════════════════════════════════════════════════════╗
+║         CANDIDATE EVALUATION REPORT                      ║
+╚══════════════════════════════════════════════════════════╝
+
+Candidate: John Doe
+Position: Machine Learning Engineer
+Decision: RECOMMENDED FOR INTERVIEW (Score: 0.87)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 SCORING BREAKDOWN:
+
+Search Algorithm Match:        0.85 (Top 3 of 1,247 candidates)
+ML Classifier Confidence:      0.87 (Random Forest)
+Semantic Similarity (BERT):    0.82 (Strong match)
+RL Agent Recommendation:       SCHEDULE_TECHNICAL_INTERVIEW
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ POSITIVE FACTORS:
+
+[+0.32] Years of Experience (5 years > 3 required)
+[+0.28] Required Skills Present (Python, TensorFlow, PyTorch)
+[+0.18] Education Level (MS in relevant field)
+[+0.12] Company Reputation (Google, Tier 1)
+[+0.09] Leadership Experience (Led team of 5)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️  AREAS TO EXPLORE IN INTERVIEW:
+
+[-0.05] Domain Switch (Tech company → Finance)
+[-0.03] Missing Skill: Scala (preferred but not required)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 INTERVIEW FOCUS AREAS:
+
+1. Experience with financial ML applications
+2. Scala proficiency or willingness to learn
+3. Regulatory compliance awareness (GDPR, SOX)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📅 NEXT STEPS:
+
+✓ Schedule 45-min technical interview
+✓ Assign interviewer: Sarah Chen (ML Team Lead)
+✓ Suggested time slots: Tue 2PM, Wed 11AM, Thu 3PM
+
+═══════════════════════════════════════════════════════════
+Generated by AI Hiring System v1.0 | SHAP Explainer
+═══════════════════════════════════════════════════════════
+```
+
+---
+
+**End of Proposal**
+
+--- 
+
+**Submitted by:**  
+[Your Team Names]  
+[Student IDs]  
+[Email Addresses]
+
+**Date:** November 14, 2025  
+**Course:** Artificial Intelligence  
+**Instructor:** [Instructor Name]
+
+---
+
+**Total Pages:** 17  
+**Word Count:** ~5,500 words
