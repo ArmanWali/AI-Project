@@ -24,9 +24,6 @@ mlflow>=1.20.0
 # Web Application (Bonus +5%)
 streamlit>=1.10.0
 
-# PDF Processing
-PyPDF2>=3.0.0
-
 # NLP
 nltk>=3.6.0
 
